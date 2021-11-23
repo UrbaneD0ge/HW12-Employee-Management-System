@@ -284,9 +284,189 @@ function updateEmployeeManager() {
               ])
                 .then(res => db.updateEmployeeManager(employeeId, res.managerId))
                 .then(() => console.log("Personal overlord designated!"))
-              .then(() => doTheThing())
+                .then(() => doTheThing())
           })
       })
     })
+}
 
+function viewRoles() {
+  db.findAllRoles()
+    .then(([roles]) => {
+      console.log("\n");
+      console.table(roles);
+    })
+    .then(() => doTheThing());
+}
+
+function addRole() {
+  db.findAllDepartments()
+    .then(([departments]) => {
+      const departmentChoices = departments.map(({ id, name }) => ({
+        name: name,
+        value: id
+      }));
+      prompt([
+        {
+          name: "title",
+          message: "What is the name of the role?"
+        },
+        {
+          name: "salary",
+          message: "What is the salary for this role?"
+        },
+        {
+          type: "list",
+          name: "department_id",
+          message: "Which department does this role belong to?",
+          choices: departmentChoices
+        }
+      ])
+      .then(role => {
+        db.createRole(role)
+          .then(() => console.log(`Added ${role.title} to the database`))
+          .then(() => doTheThing())
+      })
+    })
+}
+
+function removeRole() {
+  db.findAllRoles()
+    .then(([roles]) => {
+      const roleChoices = roles.map(({ id, title }) => ({
+        name: title,
+        value: id
+      }));
+      prompt([
+        {
+          type: "list",
+          name: "roleId",
+          message:
+            "Who do you want to fire, Michael?",
+          choices: roleChoices
+        }
+      ])
+        .then(res => db.removeRole(res.roleId))
+        .then(() => console.log("Sack'd!"))
+        .then(() => doTheThing())
+  })
+}
+
+function viewDepartments() {
+  db.findAllDepartments()
+    .then(([departments]) => {
+      console.log("\n");
+      console.table(departments);
+    })
+    .then(() => doTheThing());
+}
+
+function addDepartment() {
+  prompt([
+    {
+      name: "name",
+      message: "What is the name of this department?"
+    }
+  ])
+    .then(res => {
+      let name = res;
+      db.createDepartment(name)
+        .then(() => console.log(`Created ${name.name} Department`))
+        .then(() => doTheThing())
+  })
+}
+
+function removeDepartment() {
+  db.findAllDepartments()
+    .then(([departments]) => {
+      const departmentChoices = departments.map(({ id, name }) => ({
+        name: name,
+        value: id
+      }));
+      prompt({
+        type: "list",
+        name: "departmentId",
+        message:
+          "Which branch would you like to close, Michael?",
+        choices: departmentChoices
+      })
+        .then(res => db.removeDepartment(res.departmentId))
+        .then(() => console.log(`Department removed!`))
+        .then(() => doTheThing())
+  })
+}
+
+function viewUtilizedBudgetByDepartment() {
+  db.viewDepartmentBudgets()
+    .then(([departments]) => {
+      console.log("\n");
+      console.table(departments);
+    })
+    .then(() => doTheThing());
+}
+
+function addEmployee() {
+  prompt([
+    {
+      name: "first_name",
+      message: "What is the employee's first name?"
+    },
+    {
+      name: "last_name",
+      message: "What is the employee's last name?"
+    }
+  ])
+  .then(res => {
+    let firstName = res.first_name;
+    let lastName = res.last_name;
+
+    db.findAllRoles()
+      .then(([roles]) => {
+        const roleChoices = roles.map(({ id, title }) => ({
+          name: title,
+          value: id
+        }));
+        prompt({
+          type: "list",
+          name: "roleId",
+          message: "What is the employee's role?",
+          choices: roleChoices
+        })
+          .then(res => {
+            let roleId = res.roleId;
+
+            db.findAllEmployees()
+              .then(([employees]) => {
+                const managerChoices = employees.map(({ id, first_name, last_name }) => ({
+                  name: `${first_name} ${last_name}`,
+                  value: id
+                }));
+                managerChoices.unshift({ name: "None", value: null });
+
+                prompt({
+                  type: "list",
+                  name: "managerId",
+                  message: "Who is the employee's manager?",
+                  choices: managerChoices
+                })
+                  .then(res => {
+                    let employee = {
+                      manager_id: res.managerId,
+                      role_id: roleId,
+                      first_name: firstName,
+                      last_name: lastName
+                    }
+                    db.createEmployee(employee);
+                  })
+                  .then(() => console.log(`${firstName} ${lastName} is hired!`))
+                .then(() => doTheThing())
+            })
+          })
+        })
+      })
+}
+
+function quit() {
+  console.log("Goodbye.");
+  process.exit();
 }
