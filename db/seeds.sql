@@ -1,13 +1,13 @@
 INSERT INTO department
-  (name)
+  (dept_name)
 VALUES  ("Magical Engineering"),
         ("Unicorn Maintenance"),
         ("R&DnD"),
         ("Glitter Removal");
 
-INSERT INTO role
+INSERT INTO emp_role
   (title, salary, department_id)
-VALUES  ("O Level Wizard", 10000, ),
+VALUES  ("O Level Wizard", 10000, 1),
         ("Wizrobe", 15000, 1),
         ("Lead Unicorn Mech", 20000, 2),
         ("Horn Sharpener", 25000, 2),

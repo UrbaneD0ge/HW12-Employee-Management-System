@@ -1,4 +1,4 @@
-DROP DATABASE IF EXISTS db;
+DROP DATABASE IF EXISTS employees_db;
 CREATE DATABASE employees_db;
 
 USE employees_db;
@@ -27,6 +27,6 @@ CREATE TABLE employee (
     REFERENCES emp_role(id)
     ON DELETE CASCADE,
     manager_id INT,
-    FOREIGN KEY (id)
+    FOREIGN KEY (manager_id)
     REFERENCES employee(id)
 );
