@@ -20,7 +20,7 @@
 
 ### Usage
 
-##### Databases run from MySQL. Demo available on ![YouTube](https://www.youtube.com/watch?v=VtTtO_OvQsk)
+##### Databases run from MySQL. Demo available on [YouTube](https://www.youtube.com/watch?v=VtTtO_OvQsk)
 
 ### License
 
